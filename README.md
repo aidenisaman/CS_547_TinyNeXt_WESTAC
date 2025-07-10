@@ -13,9 +13,9 @@ Official pytorch implementation of "**An Efficient Hybrid Vision Transformer for
 
 ## Repository Structure
 
-- `classification/`: Image classification related code and checkpoint.
-- `detection/`: Object detection related code and checkpoint.
-- `speed_benchmark/`: Throughput testing scripts and logs
+- [classification](classification/README.md)/: Image classification related code and checkpoint.
+- [detection](detection/README.md)/: Object detection related code and checkpoint.
+- [speed_benchmark](speed_benchmark/README.md)/: Throughput testing scripts and logs
 
 ## Model Performance
 
@@ -26,6 +26,7 @@ Official pytorch implementation of "**An Efficient Hybrid Vision Transformer for
 | TinyNeXt-M | 75.3% | 2.3M | 475M | 19.4ms |
 | TinyNeXt-S | 72.7% | 1.3M | 304M | 14.3ms |
 | TinyNeXt-T | 71.5% | 1.0M | 259M | 12.7ms |
+
 Latency is measured on Nvidia Jetson Nano.
 
 ### Object Detection Performance Based on SSDLite (COCO2017)
