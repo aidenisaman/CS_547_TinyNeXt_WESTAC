@@ -14,7 +14,8 @@ Official pytorch implementation of "**An Efficient Hybrid Vision Transformer for
 ## Repository Structure
 
 - [classification](classification/README.md)/: Image classification related code and checkpoint.
-- [detection](detection/README.md)/: Object detection related code and checkpoint.
+- [detection](detection/README.md)/: Object detection related code.
+- [segmentation](segmentation/README.md)/: Semantic segmentation related code .
 - [speed_benchmark](speed_benchmark/README.md)/: Throughput testing scripts and logs
 
 ## Model Performance
@@ -29,16 +30,23 @@ Official pytorch implementation of "**An Efficient Hybrid Vision Transformer for
 
 Latency is measured on Nvidia Jetson Nano.
 
-### Object Detection Performance Based on SSDLite (COCO2017)
+### Object Detection Performance Based on SSDLite (MS-COCO 2017)
 
 | Backbone | AP | AP<sub>50</sub> | AP<sub>75</sub> | Parameters |
 | :--------: | :--: | :-------------: | :-------------: | :-----: |
 | TinyNeXt-S | 22.4 | 37.9 | 22.7 | 2.3M |
 | TinyNeXt-M | 25.0 | 41.1 | 25.4 | 3.3M |
 
+### Semantic Segmentation Performance Based on DeepLabv3 (Pascal VOC 2012)
+
+|  Backbone  | Parameters | Flops | mIOU |
+| :--------: | :--------: | :---: | :--: |
+| TinyNeXt-S |    2.3M    | 3.5G  | 75.5 |
+| TinyNeXt-M |    3.3M    | 5.1G  | 76.9 |
+
 # Acknowledgements
 We thank but not limited to following repositories for providing assistance for our research:
 - [PyTorch](https://pytorch.org/)
 - [TIMM](https://github.com/rwightman/pytorch-image-models)
 - [MMDetection](https://github.com/open-mmlab/mmdetection)
-
+- [MMsegmentation](https://github.com/open-mmlab/mmsegmentation)
