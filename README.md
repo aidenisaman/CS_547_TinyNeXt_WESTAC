@@ -16,7 +16,6 @@ Official pytorch implementation of "**An Efficient Hybrid Vision Transformer for
 </p>
 <hr />
 ## Repository Structure
-
 - [classification](classification/README.md)/: Image classification related code and checkpoint.
 - [detection](detection/README.md)/: Object detection related code.
 - [segmentation](segmentation/README.md)/: Semantic segmentation related code .
