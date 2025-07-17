@@ -5,7 +5,7 @@ Official pytorch implementation of "**An Efficient Hybrid Vision Transformer for
 
 > **Abstract:** To enable the deployment of Vision Transformers on resource-constrained mobile and edge devices, the development of efficient ViT models has attracted significant attention. Researchers achieved remarkable improvements in accuracy and speed by optimizing attention mechanisms and integrating lightweight CNN modules. However, existing designs often overlook runtime overhead from memory-bound operations and the shift in feature characteristics from spatial-dominant to semantic-dominant as networks deepen. This work introduces TinyNeXt, a family of efficient hybrid ViTs for TinyML, featuring Lean Single-Head Self-Attention to minimize memory-bound operations, and a macro design tailored to feature characteristics at different stages. TinyNeXt strikes a better accuracy-speed trade-off across diverse tasks and hardware platforms, outperforming state-of-the-art models of comparable scale. For instance, our TinyNeXt-T achieves a remarkable 71.5% top-1 accuracy with only 1.0M parameters on ImageNet-1K. Furthermore, compared to recent efficient models like MobileViT-XXS and MobileViT-XS, TinyNeXt-S and TinyNeXt-M achieve 3.7%/0.5% higher accuracy, respectively, while running 2.1×/2.6× faster on Nvidia Jetson Nano.
 
-<hr />
+------
 <p align="center">
   <img src="fig\top1.png" width=80%> <br>
   Comparison with SOTA models on ImgeNet-1K
@@ -14,8 +14,11 @@ Official pytorch implementation of "**An Efficient Hybrid Vision Transformer for
   <img src="fig\arch.png" width=90%> <br>
   Overview of TinyNeXt
 </p>
-<hr />
+
+------
+
 ## Repository Structure
+
 - [classification](classification/README.md)/: Image classification related code and checkpoint.
 - [detection](detection/README.md)/: Object detection related code.
 - [segmentation](segmentation/README.md)/: Semantic segmentation related code .
