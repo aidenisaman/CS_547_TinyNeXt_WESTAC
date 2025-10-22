@@ -59,8 +59,10 @@ We thank but not limited to following repositories for providing assistance for 
 
 ## Citation
 
+If you find this work helpful, please consider citing:
+
 ``````
-@InProceedings{Zeng_2025_ICCV,
+@inproceedings{tinynext_iccv2025,
 	author    = {Zeng, Fanhong and Li, Huanan and Guan, Juntao and Fan, Rui and Wu, Tong and Wang, Xilong and Lai, Rui},
 	title     = {An Efficient Hybrid Vision Transformer for TinyML Applications},
 	booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
