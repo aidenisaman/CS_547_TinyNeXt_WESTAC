@@ -2,6 +2,7 @@ import json
 import math, sys, argparse, tabulate
 import time
 import datetime
+from contextlib import nullcontext
 from pathlib import Path
 import torch
 import torch.nn as nn
@@ -23,6 +24,7 @@ args = get_args_parser().parse_args()
 utils.init_distributed_mode(args)
 device = torch.device(args.device)
 cudnn.benchmark = True
+amp_autocast = torch.cuda.amp.autocast if device.type == 'cuda' else nullcontext
 # seed
 seed = args.seed + utils.get_rank()
 torch.manual_seed(seed)
@@ -104,11 +106,12 @@ def train():
         if mixup_fn is not None:
             images, target = mixup_fn(images, target)
 
-        with torch.cuda.amp.autocast():
+        with amp_autocast():
             output = model(images)
             loss = criterion(images, output, target)
-            if hasattr(model.module, 'loss'):
-                loss = loss + model.module.loss * 1.0
+            loss_holder = model.module if args.distributed else model
+            if hasattr(loss_holder, 'loss'):
+                loss = loss + loss_holder.loss * 1.0
         if not math.isfinite(loss.item()):
             logger.info("Loss is {}, stopping training".format(loss.item()))
             sys.exit(1)
@@ -120,7 +123,8 @@ def train():
         loss_scaler(loss, optimizer, clip_grad=args.clip_grad, clip_mode=args.clip_mode,
                     parameters=model.parameters(), create_graph=is_second_order)
 
-        torch.cuda.synchronize()
+        if device.type == 'cuda':
+            torch.cuda.synchronize()
 
         # measure elapsed time
         losses.update(loss.detach(), images.size(0))
@@ -154,7 +158,7 @@ def evaluate():
     for images, target in val_loader:
         images, target = images.to(device), target.to(device)
 
-        with torch.cuda.amp.autocast():
+        with amp_autocast():
             output = model(images)
             loss = loss_fn(output, target)
 
