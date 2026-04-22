@@ -55,6 +55,95 @@ Train TinyNeXt-T with 8 GPUs in one node:
 python -m torch.distributed.launch --nproc_per_node=8 --master_port 29501 --use_env main.py --model 'tinynext_t' --data-path '/data/imagenet' --reprob 0.0 --aa="" --mixup 0 --cutmix 0.0
 ```
 
+## Experiment 2: mini-ImageNet Dataset 
+
+
+### mini-ImageNet (CSV + flat image files) on CPU
+Mini-ImageNet dataset used for this experiment:
+
+- https://www.kaggle.com/datasets/zcyzhchyu/mini-imagenet/data
+
+Expected dataset layout:
+
+```
+<DATASET_ROOT>/
+  train.csv
+  val.csv
+  test.csv
+  <image files referenced by filename in the CSVs>
+```
+
+If your mini-ImageNet dataset is provided as `train.csv` / `val.csv` with `filename,label` columns and images in a flat directory, use:
+
+```powershell
+cd classification
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv"
+```
+
+Default behavior is:
+- Merge `train.csv`, `val.csv`, and `test.csv`, then create a stratified train/val split (default train ratio `0.8`) with shared 100 classes.
+- Prepare `Data/mini_imagenet_100_folder` using hard links.
+- Run smoke baseline + smoke tuned.
+- Skip strict class-count validation unless `-ExpectedClasses` is provided.
+
+For canonical merged mini-ImageNet setup, enforce class count with:
+
+```powershell
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv" -ExpectedClasses 100
+```
+
+Run smoke + full runs:
+
+```powershell
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv" -RunFull
+```
+
+Prepare only (no training):
+
+```powershell
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv" -PrepareOnly
+```
+
+Force rebuilding prepared folders:
+
+```powershell
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv" -ForceRebuild
+```
+
+If `python` is not on PATH, pass an explicit interpreter:
+
+```powershell
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv" -PythonExe "<PYTHON_EXE_PATH>"
+```
+
+Log layout:
+- `logs_exp2_mini_imagenet_cpu/smoke/<baseline|tuned>/<model>/<timestamp>/rank0.log`
+- `logs_exp2_mini_imagenet_cpu/full/<baseline|tuned>/<model>/<timestamp>/rank0.log` (when `-RunFull` is used)
+
+Run only one preset:
+
+```powershell
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv" -RunBaseline -SmokeOnly
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv" -RunTuned -SmokeOnly
+```
+
+Equivalent baseline command (single run):
+
+```sh
+python main.py --model tinynext_t --data-set FOLDER --data-path /path/to/custom100 --train-split train --val-split val --num-classes 100 --input-size 224 --epochs 100 --batch-size 128 --reprob 0.0 --aa "" --mixup 0.0 --cutmix 0.0
+```
+
+Equivalent tuned command (single run):
+
+```sh
+python main.py --model tinynext_t --data-set FOLDER --data-path /path/to/custom100 --train-split train --val-split val --num-classes 100 --input-size 224 --epochs 100 --batch-size 128 --reprob 0.1 --aa rand-m9-mstd0.5-inc1 --mixup 0.2 --cutmix 0.2 --weight-decay 0.05 --lr 0.004 --warmup-epochs 10
+```
+
+Notes:
+- `--num-classes 100` is validated against folder labels to avoid silent mismatch.
+- You can set custom normalization with `--custom-mean r g b --custom-std r g b` if your dataset statistics differ significantly from ImageNet/CIFAR.
+- Compare your resulting `top1/top5` against the ImageNet-1K baseline numbers in this README as a reference point, but these are cross-dataset comparisons and not directly apples-to-apples.
+
 ## Evaluation
 
 <details>
