@@ -1,5 +1,64 @@
 # TinyNeXt
 
+## CS 547 Fork Information
+
+This repository is a fork created for a CS 547 class project at SUNY Polytechnic Institute.
+
+### Team Members
+
+- Aiden West
+
+### Brief Summary of Modifications in This Fork
+
+- Added an Experiment 2 workflow for mini-ImageNet-100 classification on CPU.
+- Added `classification/prepare_mini_imagenet_folder.py` to convert CSV + flat image layout into ImageFolder train/val directories.
+- Added `classification/run_experiment2_mini_imagenet_cpu.ps1` to automate data prep and baseline/tuned smoke/full runs.
+- Added and maintained experiment tracking in `EXPERIMENT_COMPARISON.md`.
+
+### Experiment 2 Dataset Acquisition
+
+For this class project, Experiment 2 uses mini-ImageNet from Kaggle:
+
+- https://www.kaggle.com/datasets/zcyzhchyu/mini-imagenet/data
+
+After downloading and extracting the dataset, ensure your dataset root contains:
+
+```
+<DATASET_ROOT>/
+	train.csv
+	val.csv
+	test.csv
+	<image files referenced by filename in the CSVs>
+```
+
+### Experiment 2 Run Instructions (Generic Paths)
+
+Run from PowerShell:
+
+```powershell
+cd <REPO_ROOT>/classification
+```
+
+Smoke run (quick validation):
+
+```powershell
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv"
+```
+
+Smoke + full runs:
+
+```powershell
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv" -RunFull
+```
+
+Prepare data only (no training):
+
+```powershell
+.\run_experiment2_mini_imagenet_cpu.ps1 -RepoRoot "<REPO_ROOT>" -ImageRoot "<DATASET_ROOT>" -TrainCsv "<DATASET_ROOT>/train.csv" -ValCsv "<DATASET_ROOT>/val.csv" -TestCsv "<DATASET_ROOT>/test.csv" -PrepareOnly
+```
+
+Detailed classification instructions remain in `classification/README.md`.
+
 ---
 Official pytorch implementation of "**[An Efficient Hybrid Vision Transformer for TinyML Applications, ICCV'2025](https://openaccess.thecvf.com/content/ICCV2025/papers/Zeng_An_Efficient_Hybrid_Vision_Transformer_for_TinyML_Applications_ICCV_2025_paper.pdf)**"
 
